@@ -51,11 +51,14 @@ with open("sms_train.tsv") as fd:
                 else:
                     spamdicter[i] += 1	
                     
-# lister = sorted(hamdicter.keys(), key = lambda x: hamdicter[x])
-# print(lister[-6:-1])
-# lister = sorted(spamdicter.keys(), key = lambda x: spamdicter[x])
-# print(lister[-6:-1])
-words = tokenize_sentences(allsentences)
+words = []
+lister = sorted(hamdicter.keys(), key = lambda x: hamdicter[x])
+words.extend(lister[-20:-1])
+lister = sorted(spamdicter.keys(), key = lambda x: spamdicter[x])
+for i in lister[-20:-1]:
+	if i not in words:
+		words.append(i)
+print(words)
 spam = []
 ham = []
 for i in dataset:
@@ -70,6 +73,9 @@ with open("sms_test.tsv") as fd:
     for row in rd:
         testset.append(bagofwords(row[1], words))
         
+print(spam)
+print(ham)
+counter = 1
 for i in testset:
 	distspam = 0
 	distham = 0
@@ -79,9 +85,11 @@ for i in testset:
 	for j in ham:
 		distham += np.linalg.norm(i-j)
 	distham = distham / len(ham)
+# 	print(distspam,distham)
 	if distspam > distham:
-		print("SPAM", i)
+		print(str(counter) +",ham")
 	else:
-		print("HAM", i)
+		print(str(counter) + ",spam")
+	counter += 1
 		
 # print(proc)
